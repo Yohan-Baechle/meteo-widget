@@ -1,40 +1,70 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Dimmer, Loader } from "semantic-ui-react";
+import Search from "../Search/Search";
 import WeatherCard from "../WeatherCard/WeatherCard";
 
-const WeatherWidget: React.FC = () => {
+function WeatherWidget() {
     // State pour stocker les données météorologiques
     const [weatherData, setWeatherData] = useState<any>(null);
+    // State pour indiquer si le chargement est en cours
+    const [loading, setLoading] = useState<boolean>(true);
 
     const apiKey = "b235eb007859e4cd6d37380ed0d42a8e";
-    const zipCode = "54200";
     const countryCode = "FR";
+
+    const handleSearch = async (city: string) => {
+        setLoading(true); // Démarre le chargement
+        // Utiliser les informations de recherche pour obtenir les données météorologiques
+        try {
+            const response = await axios.get(
+                `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&lang=fr&appid=${apiKey}&units=metric`
+            );
+            setWeatherData(response.data);
+        } catch (error) {
+            console.error(
+                "Erreur lors de la récupération des données météorologiques",
+                error
+            );
+        } finally {
+            setLoading(false); // Arrête le chargement, que la requête ait réussi ou échoué
+        }
+    };
 
     useEffect(() => {
         const fetchWeatherData = async () => {
+            setLoading(true); // Démarre le chargement
             try {
                 const response = await axios.get(
-                    `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},${countryCode}&lang=fr&appid=${apiKey}&units=metric`
+                    `https://api.openweathermap.org/data/2.5/weather?q=Toul,${countryCode}&lang=fr&appid=${apiKey}&units=metric`
                 );
-
                 setWeatherData(response.data);
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération des données météorologiques",
                     error
                 );
+            } finally {
+                setLoading(false); // Arrête le chargement, que la requête ait réussi ou échoué
             }
         };
 
         // Appeler la fonction pour récupérer les données lors du montage du composant
         fetchWeatherData();
-    }, [zipCode, countryCode, apiKey]);
+    }, [countryCode, apiKey]);
 
     return (
         <div>
-            <h1 className="bg-slate-800">Widget météo</h1>
+            <h1 style={{ marginBottom: "4rem" }}>Widget météo</h1>{" "}
+            <Search onSearch={handleSearch} />
+            {/* Vérifier si le chargement est en cours */}
+            {loading && (
+                <Dimmer active>
+                    <Loader content="Chargement..." />
+                </Dimmer>
+            )}
             {/* Vérifier si les données météorologiques sont disponibles */}
-            {weatherData && <WeatherCard data={weatherData} />}
+            {!loading && weatherData && <WeatherCard data={weatherData} />}
         </div>
     );
 };
