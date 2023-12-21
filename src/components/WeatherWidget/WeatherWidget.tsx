@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Dimmer, Loader, Container, Header } from "semantic-ui-react";
+import { Dimmer, Loader, Container, Header, Message } from "semantic-ui-react";
 import Search from "../Search/Search";
 import WeatherCard from "../WeatherCard/WeatherCard";
-
 
 const containerStyle = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "100vh", // Pour occuper au moins la hauteur de l'écran
+    minHeight: "100vh",
 };
 
 function WeatherWidget() {
@@ -18,9 +17,10 @@ function WeatherWidget() {
     const [weatherData, setWeatherData] = useState<any>(null);
     // State pour indiquer si le chargement est en cours
     const [loading, setLoading] = useState<boolean>(true);
+    // State pour gérer les messaged d'erreur
+    const [error, setError] = useState<string>("");
 
-    const apiKey = "b235eb007859e4cd6d37380ed0d42a8e";
-    const countryCode = "FR";
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_URL;
 
     const handleSearch = async (city: string) => {
         setLoading(true); // Démarre le chargement
@@ -30,10 +30,9 @@ function WeatherWidget() {
                 `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=fr&appid=${apiKey}&units=metric`
             );
             setWeatherData(response.data);
-        } catch (error) {
-            console.error(
-                "Erreur lors de la récupération des données météorologiques",
-                error
+        } catch (e) {
+            setError(
+                `Erreur lors de la récupération des données météorologiques : ${e}`
             );
         } finally {
             setLoading(false); // Arrête le chargement, que la requête ait réussi ou échoué
@@ -48,10 +47,11 @@ function WeatherWidget() {
                     `https://api.openweathermap.org/data/2.5/weather?q=Nancy,FR&lang=fr&appid=${apiKey}&units=metric`
                 );
                 setWeatherData(response.data);
-            } catch (error) {
+            } catch (e) {
                 console.error(
-                    "Erreur lors de la récupération des données météorologiques",
-                    error
+                    setError(
+                        `Erreur lors de la récupération des données météorologiques : ${e}`
+                    )
                 );
             } finally {
                 setLoading(false); // Arrête le chargement, que la requête ait réussi ou échoué
@@ -60,12 +60,20 @@ function WeatherWidget() {
 
         // Appeler la fonction pour récupérer les données lors du montage du composant
         fetchWeatherData();
-    }, [countryCode, apiKey]);
+    }, [apiKey]);
 
     return (
         <Container style={containerStyle}>
-    <Header as='h1'  style={{marginBottom: '4rem'}}>Widget Météo</Header>
+            <Header as="h1" style={{ marginBottom: "4rem" }}>
+                Widget Météo
+            </Header>
             <Search onSearch={handleSearch} />
+            {error && (
+                <Message negative>
+                    <Message.Header>Un problème a été rencontré...</Message.Header>
+                    <p>{error}</p>
+                </Message>
+            )}
             {/* Vérifier si le chargement est en cours */}
             {loading && (
                 <Dimmer active>
@@ -74,8 +82,8 @@ function WeatherWidget() {
             )}
             {/* Vérifier si les données météorologiques sont disponibles */}
             {!loading && weatherData && <WeatherCard data={weatherData} />}
-            </Container>
+        </Container>
     );
-};
+}
 
 export default WeatherWidget;
