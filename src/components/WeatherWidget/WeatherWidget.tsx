@@ -1,8 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Dimmer, Loader } from "semantic-ui-react";
+import { Dimmer, Loader, Container, Header } from "semantic-ui-react";
 import Search from "../Search/Search";
 import WeatherCard from "../WeatherCard/WeatherCard";
+
+
+const containerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "100vh", // Pour occuper au moins la hauteur de l'écran
+};
 
 function WeatherWidget() {
     // State pour stocker les données météorologiques
@@ -18,7 +27,7 @@ function WeatherWidget() {
         // Utiliser les informations de recherche pour obtenir les données météorologiques
         try {
             const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&lang=fr&appid=${apiKey}&units=metric`
+                `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=fr&appid=${apiKey}&units=metric`
             );
             setWeatherData(response.data);
         } catch (error) {
@@ -36,7 +45,7 @@ function WeatherWidget() {
             setLoading(true); // Démarre le chargement
             try {
                 const response = await axios.get(
-                    `https://api.openweathermap.org/data/2.5/weather?q=Toul,${countryCode}&lang=fr&appid=${apiKey}&units=metric`
+                    `https://api.openweathermap.org/data/2.5/weather?q=Nancy,FR&lang=fr&appid=${apiKey}&units=metric`
                 );
                 setWeatherData(response.data);
             } catch (error) {
@@ -54,8 +63,8 @@ function WeatherWidget() {
     }, [countryCode, apiKey]);
 
     return (
-        <div>
-            <h1 style={{ marginBottom: "4rem" }}>Widget météo</h1>{" "}
+        <Container style={containerStyle}>
+    <Header as='h1'  style={{marginBottom: '4rem'}}>Widget Météo</Header>
             <Search onSearch={handleSearch} />
             {/* Vérifier si le chargement est en cours */}
             {loading && (
@@ -65,7 +74,7 @@ function WeatherWidget() {
             )}
             {/* Vérifier si les données météorologiques sont disponibles */}
             {!loading && weatherData && <WeatherCard data={weatherData} />}
-        </div>
+            </Container>
     );
 };
 
