@@ -1,30 +1,29 @@
-# React + TypeScript + Vite
+# Weather Widget
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ce projet est un widget météo simple construit avec React et TypeScript, utilisant l'API OpenWeather pour afficher les informations météorologiques en temps réel.
 
-Currently, two official plugins are available:
+## Configuration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Clé API OpenWeather
 
-## Expanding the ESLint configuration
+Pour utiliser ce widget, vous devez obtenir une clé API gratuite auprès d'OpenWeather. Visitez [OpenWeather](https://openweathermap.org/) pour vous inscrire et obtenir votre clé API. Une fois que vous avez votre clé, configurez-la dans le fichier `.env` à la racine du projet.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+```plaintext
+VITE_OPENWEATHER_API_URL=YOUR_API_KEY
+```
+## Installation des dépendances
+Assurez-vous d'installer les dépendances nécessaires en exécutant la commande suivante dans votre terminal :
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+npm install
+# ou
+yarn install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Exécution du projet
+Pour lancer le projet en mode de développement, utilisez la commande suivante :
+```
+npm run dev
+# ou
+yarn dev
+```
