@@ -1,5 +1,8 @@
 # Weather Widget
 
+[![CI](https://github.com/Yohan-Baechle/meteo-widget/actions/workflows/ci.yml/badge.svg)](https://github.com/Yohan-Baechle/meteo-widget/actions/workflows/ci.yml)
+
+
 Ce projet est un widget météo simple construit avec React et TypeScript, utilisant l'API OpenWeather pour afficher les informations météorologiques en temps réel.
 
 ## Configuration
